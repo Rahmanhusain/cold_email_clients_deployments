@@ -18,10 +18,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fix image URLs in F4 and Wellness
+        run: |
+          # Fix image and CSS paths for F4 build
+          find F4/dist -type f -name "*.html" -exec sed -i 's|src="/img/|src="/cold_email_clients_deployments/F4/img/|g' {} +
+          find F4/dist -type f -name "*.css" -exec sed -i 's|url(/img/|url(/cold_email_clients_deployments/F4/img/|g' {} +
+          
+          # Fix image and CSS paths for Wellness build
+          find wellness/dist -type f -name "*.html" -exec sed -i 's|src="/img/|src="/cold_email_clients_deployments/wellness/img/|g' {} +
+          find wellness/dist -type f -name "*.css" -exec sed -i 's|url(/img/|url(/cold_email_clients_deployments/wellness/img/|g' {} +
+
       - name: Prepare deployment folder
         run: |
           mkdir deploy
-          # copy built sites into a single folder
           cp -r F4/dist deploy/F4
           cp -r wellness/dist deploy/wellness
 
