@@ -1,9 +1,12 @@
-name: Deploy Prebuilt F4 and Wellness Sites
+name: Deploy F4 and Wellness (Prebuilt)
 
 on:
   push:
     branches:
-      - main  # or your default branch (like master)
+      - main  # or your branch name
+
+permissions:
+  contents: write  # <— Important for push access!
 
 jobs:
   deploy:
@@ -12,25 +15,29 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # <— important so git has full history
 
       # ---------------------
-      # Deploy F4 (prebuilt)
+      # Deploy F4 site
       # ---------------------
-      - name: Deploy F4/dist to GitHub Pages
+      - name: Deploy F4/dist to gh-pages/F4
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./F4/dist
           destination_dir: F4
-          keep_files: true  # Keeps both sites in the same gh-pages branch
+          keep_files: true
+          force_orphan: true  # <— prevents git history conflicts
 
       # ---------------------
-      # Deploy Wellness (prebuilt)
+      # Deploy Wellness site
       # ---------------------
-      - name: Deploy wellness/dist to GitHub Pages
+      - name: Deploy wellness/dist to gh-pages/wellness
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./wellness/dist
           destination_dir: wellness
           keep_files: true
+          force_orphan: true
